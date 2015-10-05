@@ -931,7 +931,7 @@ def get_df(query_id_list, db_name, sql_condition = None):
     
 
 
-# In[2]:
+# In[1]:
 
 def colour_terms(df, markup_list):
     '''Will colour the terms in the df according to the markup_list and return an HTML object with the colours. Supply a df(non-HTML) and list of dictionaries. Each dictionary should have keys 'name'(of dict), 'terms'(value is list of terms), and 'colour'.
@@ -946,7 +946,9 @@ def colour_terms(df, markup_list):
         
         for x in markup_list:
 
-            pattern = re.compile(r'\b(' + '|'.join(x['terms']) + r')\b', flags=re.I)
+            # pattern = re.compile(r'\b(' + r'|'.join(x['terms']) + r')\b', flags=re.I)
+            
+            pattern = re.compile('(' + '|'.join(x['terms']) + ')', flags=re.I)
 
             html = re.sub(pattern, r'<span class="{}">\1</span>'.format(x['name']), html)
             
