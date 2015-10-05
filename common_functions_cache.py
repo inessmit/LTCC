@@ -853,7 +853,7 @@ def get_df(query_id_list, db_name, sql_condition = None):
         
     conn = lite.connect(db_name)
     cursor = conn.cursor()
-    pd.set_option('max_colwidth',2000)
+    pd.set_option('max_colwidth',100000)
     
     sql = '''select distinct r.pmid, a.year, a.title, a.abstract, a.journal_title, a.in_chembl, s.score, a.avail_codes, a.pdf_links, a.other_links, al.campus_links, al.request_access, er.error_comment
         from result_ids r
@@ -931,22 +931,25 @@ def get_df(query_id_list, db_name, sql_condition = None):
     
 
 
-# In[1]:
+# In[2]:
 
 def colour_terms(df, markup_list):
     '''Will colour the terms in the df according to the markup_list and return an HTML object with the colours. Supply a df(non-HTML) and list of dictionaries. Each dictionary should have keys 'name'(of dict), 'terms'(value is list of terms), and 'colour'.
     kwargs: df -- a dataframe with a column 'abstracts' and 'title'
             markup_list -- a list of dictionaries with markup specification (list of terms and colour assigned)
     '''
+    df = df.copy()
     
     css = '\n'.join(".{name} {{ color: {color}; }}".format(**x) for x in markup_list)
 
     def add_colour(html):
+        
         for x in markup_list:
 
             pattern = re.compile(r'\b(' + '|'.join(x['terms']) + r')\b', flags=re.I)
 
             html = re.sub(pattern, r'<span class="{}">\1</span>'.format(x['name']), html)
+            
         return html
 
     df['abstract'] = df['abstract'].apply(add_colour)
@@ -971,7 +974,7 @@ def separate_column_df(query_id_list, db_name, sql_condition = None):
     
     conn = lite.connect(db_name)
     cursor = conn.cursor()
-    pd.set_option('max_colwidth',2000)
+    pd.set_option('max_colwidth',100000)
     
     sql = '''select distinct r.pmid, a.year, a.title, a.abstract, a.journal_title, a.in_chembl, s.score, a.avail_codes, a.pdf_links, a.other_links, al.campus_links, al.request_access, er.error_comment
         from result_ids r
